@@ -1,0 +1,38 @@
+name: Check links and Spell Check
+
+on:
+  push:
+    branches:
+        - '**'
+  pull_request:
+    branches:
+        - '**'
+        
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --verbose "**/*.md" --verbose "**/*.mdx" --verbose "**/*.tsx" --verbose "**/*.rs" --verbose "**/*.ts"
+
+  spellcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Codespell
+        run: pip install codespell
+
+      - name: Run Codespell
+        run: |
+          codespell \
+            --ignore-words=.codespellrc \
+            --skip="*.min.js,*.json,*.lock,*.bin,*.svg"
